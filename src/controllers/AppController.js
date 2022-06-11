@@ -4,11 +4,13 @@ import { inputErrorHandler } from "../errorHandlers/inputErrorHandler.js";
 import { getHomedir } from "../os/getHomeDir.js";
 import { FileSystemService } from "../services/FileSystemService.js";
 import { NavigationService } from "../services/NavigationService.js";
+import { OsService } from "../services/OsService.js";
 
 export class AppController {
     constructor () {
         this.navigationService = new NavigationService(getHomedir());
         this.fileSystemService = new FileSystemService();
+        this.osService = new OsService();
     };
 
     commandHandler = async (data) => {
@@ -58,6 +60,11 @@ export class AppController {
 
             case commands.rm:
                 await this.fileSystemService.rm(command[1], currentPath);
+                this.printDirectory();
+                break;
+
+            case commands.os:
+                this.osService.commandsHandler(command[1]);
                 this.printDirectory();
                 break;
 

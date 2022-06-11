@@ -7,5 +7,14 @@ export const commands = {
     rn: "rn",
     cp: "cp",
     mv: "mv",
-    rm: "rm"
+    rm: "rm",
+    os: "os"
+};
+
+export const osCommands = {
+    eol: "--EOL",
+    cpus: "--cpus",
+    homedir: "--homedir",
+    username: "--username",
+    architecture: "--architecture"
 };
