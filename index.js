@@ -24,8 +24,6 @@ stdin.on("data", async (data) => {
     } catch (error) {
         console.warn(error.message);
     };
-
-    stdout.write(`You are currently in ${appController.getCurrentPath()}\n`)
 });
 
 process.on("SIGINT", () => {
