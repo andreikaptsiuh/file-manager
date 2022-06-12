@@ -3,6 +3,7 @@ import { commands } from "../constants/commands.js";
 import { inputErrorHandler } from "../errorHandlers/inputErrorHandler.js";
 import { getHomedir } from "../os/getHomeDir.js";
 import { FileSystemService } from "../services/FileSystemService.js";
+import { HashService } from "../services/HashService.js";
 import { NavigationService } from "../services/NavigationService.js";
 import { OsService } from "../services/OsService.js";
 
@@ -11,6 +12,7 @@ export class AppController {
         this.navigationService = new NavigationService(getHomedir());
         this.fileSystemService = new FileSystemService();
         this.osService = new OsService();
+        this.hashService = new HashService();
     };
 
     commandHandler = async (data) => {
@@ -66,6 +68,10 @@ export class AppController {
             case commands.os:
                 this.osService.commandsHandler(command[1]);
                 this.printDirectory();
+                break;
+
+            case commands.hash:
+                this.hashService.hash(command[1], currentPath, this.printDirectory);
                 break;
 
             default:

@@ -1,9 +1,9 @@
 import fs from "fs";
 import { writeFile, rename, cp, unlink } from "fs/promises";
-import path from "path";
 import { inputErrorHandler } from "../errorHandlers/inputErrorHandler.js";
+import { WorkingWithPathService } from "./WorkingWithPathService.js";
 
-export class FileSystemService {
+export class FileSystemService extends WorkingWithPathService {
     cat = async (readFilePath, currentPath, callbackForEndRead) => {
         const absoluteReadFilePath = this._getAbsolutePath(readFilePath, currentPath);
         const readStream = fs.createReadStream(absoluteReadFilePath);
@@ -75,17 +75,5 @@ export class FileSystemService {
         } catch {
             inputErrorHandler();
         };
-    };
-
-    _getAbsolutePath = (filePath, currentPath) => {
-        let absoluteFilePath;
-
-        if (!path.isAbsolute(filePath)) {
-            absoluteFilePath = path.join(currentPath, filePath);
-        } else {
-            absoluteFilePath = filePath;
-        };
-
-        return absoluteFilePath;
     };
 };

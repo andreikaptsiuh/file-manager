@@ -8,7 +8,8 @@ export const commands = {
     cp: "cp",
     mv: "mv",
     rm: "rm",
-    os: "os"
+    os: "os",
+    hash: "hash"
 };
 
 export const osCommands = {
