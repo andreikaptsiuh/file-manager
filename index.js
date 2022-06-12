@@ -10,6 +10,7 @@ const userName = argv.find((argument) => argument.startsWith("--username"))?.spl
 const messageSplicer = os.platform() === "win32" ? "\r" : "\n";
 
 stdout.write(`Welcome to the File Manager, ${userName}!\n`);
+appController.printDirectory();
 
 stdin.on("data", async (data) => {
     const messageFromUser = data.toString("utf-8").split(messageSplicer)[0];
