@@ -1,5 +1,6 @@
 import fs from "fs";
-import { writeFile, rename, cp, unlink } from "fs/promises";
+import { rename, unlink } from "fs/promises";
+import { pipeline } from "stream";
 import { inputErrorHandler } from "../errorHandlers/inputErrorHandler.js";
 import { WorkingWithPathService } from "./WorkingWithPathService.js";
 
@@ -8,7 +9,7 @@ export class FileSystemService extends WorkingWithPathService {
         const absoluteReadFilePath = this._getAbsolutePath(readFilePath, currentPath);
         const readStream = fs.createReadStream(absoluteReadFilePath);
 
-        readStream.on('error', (error) => {
+        readStream.on("error", (error) => {
             readStream.destroy();
             console.log("Invalid input");
         });
@@ -23,14 +24,19 @@ export class FileSystemService extends WorkingWithPathService {
         });
     };
 
-    add = async (createFilePath, currentPath) => {
+    add = async (createFilePath, currentPath, callbackForEndWrite) => {
         const absoluteCreateFilePath = this._getAbsolutePath(createFilePath, currentPath);
+        const writeStream = fs.createWriteStream(absoluteCreateFilePath);
 
-        try {
-            await writeFile(absoluteCreateFilePath, "");
-        } catch {
-            inputErrorHandler();
-        };
+        writeStream.on("error", (error) => {
+            writeStream.destroy();
+            console.log("Invalid input");
+        });
+
+        writeStream.end("", () => {
+            writeStream.destroy();
+            callbackForEndWrite();
+        });
     };
 
     rn = async (filePath, newFilePath, currentPath) => {
@@ -44,25 +50,31 @@ export class FileSystemService extends WorkingWithPathService {
         };
     };
 
-    // TODO: make cp working with streams api
-    cp = async (filePath, copiedFilePath, currentPath) => {
+    cp = async (filePath, copiedFilePath, currentPath, callbackForEndStreams) => {
         const absoluteFilePath = this._getAbsolutePath(filePath, currentPath);
         const absoluteCopiedFilePath = this._getAbsolutePath(copiedFilePath, currentPath);
 
-        try {
-            await cp(absoluteFilePath, absoluteCopiedFilePath);
-        } catch {
-            inputErrorHandler();
-        };
+        const readStream = fs.createReadStream(absoluteFilePath);
+        const writeStream = fs.createWriteStream(absoluteCopiedFilePath);
+
+        pipeline(readStream, writeStream, (err) => {
+            try {
+                if (err) inputErrorHandler();
+                callbackForEndStreams && callbackForEndStreams();
+            } catch (error) {
+                console.log(error.message);
+            };
+        });
     };
 
-    mv = async (filePath, copiedFilePath, currentPath) => {
+    mv = async (filePath, copiedFilePath, currentPath, callbackForEndStreams) => {
         const absoluteFilePath = this._getAbsolutePath(filePath, currentPath);
         const absoluteCopiedFilePath = this._getAbsolutePath(copiedFilePath, currentPath);
 
         try {
-            await cp(absoluteFilePath, absoluteCopiedFilePath);
+            await this.cp(absoluteFilePath, absoluteCopiedFilePath);
             await this.rm(absoluteFilePath, currentPath);
+            callbackForEndStreams();
         } catch {
             inputErrorHandler();
         };

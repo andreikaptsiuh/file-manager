@@ -43,8 +43,7 @@ export class AppController {
                 break;
 
             case commands.add:
-                await this.fileSystemService.add(command[1], currentPath);
-                this.printDirectory();
+                await this.fileSystemService.add(command[1], currentPath, this.printDirectory);
                 break;
 
             case commands.rn:
@@ -53,13 +52,11 @@ export class AppController {
                 break;
 
             case commands.cp:
-                await this.fileSystemService.cp(command[1], command[2], currentPath);
-                this.printDirectory();
+                await this.fileSystemService.cp(command[1], command[2], currentPath, this.printDirectory);
                 break;
 
             case commands.mv:
-                await this.fileSystemService.mv(command[1], command[2], currentPath);
-                this.printDirectory();
+                await this.fileSystemService.mv(command[1], command[2], currentPath, this.printDirectory);
                 break;
 
             case commands.rm:
