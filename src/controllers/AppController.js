@@ -2,6 +2,7 @@ import { stdout } from "process";
 import { commands } from "../constants/commands.js";
 import { inputErrorHandler } from "../errorHandlers/inputErrorHandler.js";
 import { getHomedir } from "../os/getHomeDir.js";
+import { CompressionService } from "../services/CompressionService.js";
 import { FileSystemService } from "../services/FileSystemService.js";
 import { HashService } from "../services/HashService.js";
 import { NavigationService } from "../services/NavigationService.js";
@@ -13,6 +14,7 @@ export class AppController {
         this.fileSystemService = new FileSystemService();
         this.osService = new OsService();
         this.hashService = new HashService();
+        this.compressionService = new CompressionService();
     };
 
     commandHandler = async (data) => {
@@ -71,7 +73,15 @@ export class AppController {
                 break;
 
             case commands.hash:
-                this.hashService.hash(command[1], currentPath, this.printDirectory);
+                await this.hashService.hash(command[1], currentPath, this.printDirectory);
+                break;
+
+            case commands.compress:
+                await this.compressionService.compress(command[1], command[2], currentPath, this.printDirectory);
+                break;
+
+            case commands.decompress:
+                await this.compressionService.decompress(command[1], command[2], currentPath, this.printDirectory);
                 break;
 
             default:

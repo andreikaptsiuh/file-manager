@@ -44,6 +44,7 @@ export class FileSystemService extends WorkingWithPathService {
         };
     };
 
+    // TODO: make cp working with streams api
     cp = async (filePath, copiedFilePath, currentPath) => {
         const absoluteFilePath = this._getAbsolutePath(filePath, currentPath);
         const absoluteCopiedFilePath = this._getAbsolutePath(copiedFilePath, currentPath);

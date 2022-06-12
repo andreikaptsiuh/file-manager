@@ -3,7 +3,7 @@ import { createHash } from "crypto";
 import { WorkingWithPathService } from "./WorkingWithPathService.js";
 
 export class HashService extends WorkingWithPathService {
-    hash = (filePath, currentPath, callbackForEndRead) => {
+    hash = async (filePath, currentPath, callbackForEndRead) => {
         const absoluteFilePath = this._getAbsolutePath(filePath, currentPath);
         const readStream = fs.createReadStream(absoluteFilePath);
         const hash = createHash("sha256");
